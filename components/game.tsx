@@ -6,6 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Coins, Users, Building2, Award, TrendingUp, Sword, Shield, Beaker, Target, Shirt, Download, Upload, RefreshCw } from 'lucide-react'
+import GameStats from './gameStats'
+import GameActions from './gameActions'
+import ItemList from './itemsList'
+import ItemsList from './itemsList'
+import MerchantsList from './merchantsList'
+import ShopsList from './shopsList'
+import UpgradesList from './upgradesList'
 
 type Item = {
   name: string;
@@ -277,11 +284,10 @@ export default function Game() {
     linkElement.click()
   }
 
-  const resetGame = () => {
+  const resetGame = (prestige = false) => {
     setGold(100)
     setReputation(0)
     setSalesCount(0)
-    setPrestigePoints(0)
     setCurrentEvent(null)
     setEventTimer(0)
     setItems([
@@ -306,200 +312,37 @@ export default function Game() {
       { name: "Partnerships", cost: 1000, effect: "Increases earnings by 15% for each sale", unlocked: false, purchased: false },
       { name: "Merchant Training", cost: 1500, effect: "Increases merchant efficiency by 20%", unlocked: false, purchased: false },
     ])
+    if (!prestige) {
+      setPrestigePoints(0)
+    }
   }
 
   return (
     <TooltipProvider>
       <div className="container mx-auto p-4 bg-stone-900 text-amber-100 min-h-screen font-serif">
-        <Card className="mb-4 bg-stone-800 border-amber-500 border-2">
-          <CardHeader>
-            <CardTitle className="text-3xl text-amber-300">Merchant's Guild of the Realm</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div>
-                <p className="text-lg font-semibold text-amber-200">Gold: {Math.floor(gold)}</p>
-              </div>
-              <div>
-                <p className="text-lg font-semibold text-amber-200">Reputation: {reputation}</p>
-              </div>
-              <div>
-                <p className="text-lg font-semibold text-amber-200">Prestige Points: {prestigePoints}</p>
-              </div>
-            </div>
-            {currentEvent && (
-              <div className="mb-4 p-2 bg-amber-900 rounded">
-                <p className="text-lg font-semibold">{currentEvent}</p>
-                <Progress value={(eventTimer / 300) * 100} className="mt-2" />
-              </div>
-            )}
-            <div className="grid grid-cols-4 gap-2 mb-4">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    onClick={manualSale} 
-                    className="w-full bg-amber-600 hover:bg-amber-700 text-stone-900"
-                  >
-                    <Coins className="mr-2 h-4 w-4" /> Make a Sale
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Manually sell items from your inventory</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    onClick={importSave} 
-                    className="w-full bg-green-600 hover:bg-green-700 text-stone-900"
-                  >
-                    <Upload className="mr-2 h-4 w-4" /> Import Save
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Import a saved game file</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    onClick={exportSave} 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-stone-900"
-                  >
-                    <Download className="mr-2 h-4 w-4" /> Export Save
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Download your current game progress</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    onClick={resetGame} 
-                    className="w-full bg-red-600 hover:bg-red-700 text-stone-900"
-                  >
-                    <RefreshCw className="mr-2 h-4 w-4" /> Reset Game
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Start a new game from scratch</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <Card className="bg-stone-800 border-amber-500 border-2">
-            <CardHeader>
-              <CardTitle className="text-xl text-amber-300">Adventuring Gear</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {items.map((item, index) => (
-                <Tooltip key={item.name}>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={() => buyItem(index)} 
-                      disabled={gold < item.cost || !item.unlocked} 
-                      className="w-full mb-2 bg-stone-700 hover:bg-stone-600 text-amber-100 disabled:bg-stone-800 disabled:text-stone-500"
-                    >
-                      {index === 0 && <Sword className="mr-2 h-4 w-4" />}
-                      {index === 1 && <Shield className="mr-2 h-4 w-4" />}
-                      {index === 2 && <Beaker className="mr-2 h-4 w-4" />}
-                      {index === 3 && <Target className="mr-2 h-4 w-4" />}
-                      {index === 4 && <Shirt className="mr-2 h-4 w-4" />}
-                      {item.name} (Owned: {item.owned}) - Cost: {item.cost}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Gain: {item.gain} gold per sale</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="bg-stone-800 border-amber-500 border-2">
-            <CardHeader>
-              <CardTitle className="text-xl text-amber-300">Guild Members</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {merchants.map((merchant, index) => (
-                <Tooltip key={merchant.name}>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={() => buyMerchant(index)} 
-                      disabled={gold < merchant.cost || !merchant.unlocked} 
-                      className="w-full mb-2 bg-stone-700 hover:bg-stone-600 text-amber-100 disabled:bg-stone-800 disabled:text-stone-500"
-                    >
-                      <Users className="mr-2 h-4 w-4" /> 
-                      {merchant.name} (Hired: {merchant.owned}) - Cost: {merchant.cost}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Boost: +{merchant.boost * 100}% sales</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </CardContent>
-          </Card>
+      <GameStats
+        gold={gold}
+        reputation={reputation}
+        salesCount={salesCount}
+        prestigePoints={prestigePoints}
+        currentEvent={currentEvent}
+        eventTimer={eventTimer}
+      />
+      <GameActions
+        manualSale={manualSale}
+        importSave={importSave}
+        exportSave={exportSave}
+        resetGame={resetGame}
+      />
+      
+      <div className="grid grid-cols-2 gap-4 mb-4">
+          <ItemsList items={items} gold={gold} onBuyItem={buyItem} />
+          <MerchantsList merchants={merchants} gold={gold} onBuyMerchant={buyMerchant} />
+          <ShopsList shops={shops} gold={gold} onBuyShop={buyShop} />
+          <UpgradesList upgrades={upgrades} gold={gold} onBuyUpgrade={buyUpgrade} />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <Card className="bg-stone-800 border-amber-500 border-2">
-            <CardHeader>
-              <CardTitle className="text-xl text-amber-300">Guild Outposts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {shops.map((shop, index) => (
-                <Tooltip key={shop.name}>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={() => buyShop(index)} 
-                      disabled={gold < shop.cost || !shop.unlocked} 
-                      className="w-full mb-2 bg-stone-700 hover:bg-stone-600 text-amber-100 disabled:bg-stone-800 disabled:text-stone-500"
-                    >
-                      <Building2 className="mr-2 h-4 w-4" /> 
-                      {shop.name} (Owned: {shop.owned}) - Cost: {shop.cost}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Boost: +{shop.boost * 100}% sales</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="bg-stone-800 border-amber-500 border-2">
-            <CardHeader>
-              <CardTitle className="text-xl text-amber-300">Guild Enhancements</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {upgrades.map((upgrade, index) => (
-                <Tooltip key={upgrade.name}>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={() => buyUpgrade(index)} 
-                      disabled={!upgrade.unlocked || upgrade.purchased || gold < upgrade.cost} 
-                      className="w-full mb-2 bg-stone-700 hover:bg-stone-600 text-amber-100 disabled:bg-stone-800 disabled:text-stone-500"
-                    >
-                      <TrendingUp className="mr-2 h-4 w-4" /> 
-                      {upgrade.name} - Cost: {upgrade.cost}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{upgrade.effect}</p>
-                    {!upgrade.unlocked && <p>Unlocks at {index === 0 ? 500 : index === 1 ? 1000 : 1500} sales</p>}
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="bg-stone-800 border-amber-500 border-2">
+      <Card className="bg-stone-800 border-amber-500 border-2">
           <CardHeader>
             <CardTitle className="text-xl text-amber-300">Legendary Status</CardTitle>
           </CardHeader>
@@ -510,7 +353,7 @@ export default function Game() {
                   onClick={() => {
                     if (reputation >= 1000) {
                       setPrestigePoints(prev => prev + 1)
-                      resetGame()
+                      resetGame(true)
                     }
                   }} 
                   disabled={reputation < 1000} 
@@ -525,7 +368,7 @@ export default function Game() {
             </Tooltip>
           </CardContent>
         </Card>
-      </div>
+    </div>
     </TooltipProvider>
   )
 }
