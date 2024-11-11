@@ -83,7 +83,6 @@ export default function Game() {
   useEffect(() => {
     // Load saved data from localStorage when the component mounts
     const savedData = localStorage.getItem('dungeonMerchantSave')
-    console.log("savedData", savedData)
     setStopSave(true)
     if (savedData) {
       const parsedData = JSON.parse(savedData)
@@ -116,7 +115,6 @@ export default function Game() {
       eventTimer
     }
     if (!stopSave) {
-      console.log("save", saveData)
       localStorage.setItem('dungeonMerchantSave', JSON.stringify(saveData))
     } 
   }, [gold, reputation, salesCount, prestigePoints, items, merchants, shops, upgrades, currentEvent, eventTimer])
@@ -284,6 +282,8 @@ export default function Game() {
     setReputation(0)
     setSalesCount(0)
     setPrestigePoints(0)
+    setCurrentEvent(null)
+    setEventTimer(0)
     setItems([
       { name: "Iron Sword", cost: 10, gain: 1, owned: 0, unlocked: true },
       { name: "Wooden Shield", cost: 15, gain: 2, owned: 0, unlocked: false },
