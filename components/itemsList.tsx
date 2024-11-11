@@ -1,18 +1,11 @@
-// ItemList.js
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Item } from "../types/Item";
 
-type Item = {
-    name: string;
-    cost: number;
-    gain: number;
-    owned: number;
-    unlocked: boolean;
-  }
+type ItemListProps = { items: Item[], onBuyItem: (index: number) => void, gold: number }
 
-type Props = { items: Item[], onBuyItem: (index: number) => void, gold: number }
-
-export default function ItemList({ items, onBuyItem, gold }: Props) {
+export default function ItemList({ items, onBuyItem, gold }: ItemListProps) {
   return (
     <Card className="bg-stone-800 border-amber-500 border-2">
       <CardHeader>

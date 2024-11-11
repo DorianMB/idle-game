@@ -1,13 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-type Shop = {
-    name: string;
-    cost: number;
-    boost: number;
-    owned: number;
-    unlocked: boolean;
-  }
+import React from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Shop } from "../types/Shop";
 
 type ShopsListProps = {
   shops: Shop[];

@@ -1,50 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Coins, Users, Building2, Award, TrendingUp, Sword, Shield, Beaker, Target, Shirt, Download, Upload, RefreshCw } from 'lucide-react'
-import GameStats from './gameStats'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+import { Award } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip"
+import { Item } from '../types/Item'
+import { Merchant } from '../types/Merchant'
+import { Shop } from '../types/Shop'
+import { Upgrade } from '../types/Upgrade'
 import GameActions from './gameActions'
-import ItemList from './itemsList'
+import GameStats from './gameStats'
 import ItemsList from './itemsList'
 import MerchantsList from './merchantsList'
 import ShopsList from './shopsList'
 import UpgradesList from './upgradesList'
-
-type Item = {
-  name: string;
-  cost: number;
-  gain: number;
-  owned: number;
-  unlocked: boolean;
-}
-
-type Merchant = {
-  name: string;
-  cost: number;
-  boost: number;
-  owned: number;
-  unlocked: boolean;
-}
-
-type Shop = {
-  name: string;
-  cost: number;
-  boost: number;
-  owned: number;
-  unlocked: boolean;
-}
-
-type Upgrade = {
-  name: string;
-  cost: number;
-  effect: string;
-  unlocked: boolean;
-  purchased: boolean;
-}
 
 export default function Game() {
   const [gold, setGold] = useState(100)
@@ -123,7 +94,7 @@ export default function Game() {
     }
     if (!stopSave) {
       localStorage.setItem('dungeonMerchantSave', JSON.stringify(saveData))
-    } 
+    }
   }, [gold, reputation, salesCount, prestigePoints, items, merchants, shops, upgrades, currentEvent, eventTimer])
 
   const generateSales = () => {
@@ -275,7 +246,7 @@ export default function Game() {
       eventTimer
     }
     const dataStr = JSON.stringify(saveData)
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
     const exportFileDefaultName = 'dungeon_merchant_save.json'
 
     const linkElement = document.createElement('a')
@@ -320,43 +291,65 @@ export default function Game() {
   return (
     <TooltipProvider>
       <div className="container mx-auto p-4 bg-stone-900 text-amber-100 min-h-screen font-serif">
-      <GameStats
-        gold={gold}
-        reputation={reputation}
-        salesCount={salesCount}
-        prestigePoints={prestigePoints}
-        currentEvent={currentEvent}
-        eventTimer={eventTimer}
-      />
-      <GameActions
-        manualSale={manualSale}
-        importSave={importSave}
-        exportSave={exportSave}
-        resetGame={resetGame}
-      />
-      
-      <div className="grid grid-cols-2 gap-4 mb-4">
-          <ItemsList items={items} gold={gold} onBuyItem={buyItem} />
-          <MerchantsList merchants={merchants} gold={gold} onBuyMerchant={buyMerchant} />
-          <ShopsList shops={shops} gold={gold} onBuyShop={buyShop} />
-          <UpgradesList upgrades={upgrades} gold={gold} onBuyUpgrade={buyUpgrade} />
-        </div>
+        <GameStats
+          gold={gold}
+          reputation={reputation}
+          salesCount={salesCount}
+          prestigePoints={prestigePoints}
+          currentEvent={currentEvent}
+          eventTimer={eventTimer}
+        />
+        <GameActions
+          manualSale={manualSale}
+          importSave={importSave}
+          exportSave={exportSave}
+          resetGame={resetGame}
+        />
 
-      <Card className="bg-stone-800 border-amber-500 border-2">
+        <Tabs defaultValue="items" className="w-full">
+          <TabsList className="flex">
+            <TabsTrigger value="items" className="w-full h-[40px] bg-amber-600 hover:bg-amber-700 text-stone-900">
+              Items
+            </TabsTrigger>
+            <TabsTrigger value="merchants" className="w-full h-[40px] bg-amber-600 hover:bg-amber-700 text-stone-900">
+              Merchants
+            </TabsTrigger>
+            <TabsTrigger value="shops" className="w-full h-[40px] bg-amber-600 hover:bg-amber-700 text-stone-900">
+              Shops
+            </TabsTrigger>
+            <TabsTrigger value="upgrades" className="w-full h-[40px] bg-amber-600 hover:bg-amber-700 text-stone-900">
+              Upgrades
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="items">
+            <ItemsList items={items} gold={gold} onBuyItem={buyItem} />
+          </TabsContent>
+          <TabsContent value="merchants">
+            <MerchantsList merchants={merchants} gold={gold} onBuyMerchant={buyMerchant} />
+          </TabsContent>
+          <TabsContent value="shops">
+            <ShopsList shops={shops} gold={gold} onBuyShop={buyShop} />
+          </TabsContent>
+          <TabsContent value="upgrades">
+            <UpgradesList upgrades={upgrades} gold={gold} onBuyUpgrade={buyUpgrade} />
+          </TabsContent>
+        </Tabs>
+
+        <Card className="bg-stone-800 border-amber-500 border-2">
           <CardHeader>
             <CardTitle className="text-xl text-amber-300">Legendary Status</CardTitle>
           </CardHeader>
           <CardContent>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
+                <Button
                   onClick={() => {
                     if (reputation >= 1000) {
                       setPrestigePoints(prev => prev + 1)
                       resetGame(true)
                     }
-                  }} 
-                  disabled={reputation < 1000} 
+                  }}
+                  disabled={reputation < 1000}
                   className="w-full bg-red-900 hover:bg-red-800 text-amber-100 disabled:bg-stone-800 disabled:text-stone-500"
                 >
                   <Award className="mr-2 h-4 w-4" /> Ascend to Legendary Merchant
@@ -368,7 +361,7 @@ export default function Game() {
             </Tooltip>
           </CardContent>
         </Card>
-    </div>
+      </div>
     </TooltipProvider>
   )
 }

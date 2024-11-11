@@ -1,7 +1,8 @@
 // GameActions.js
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Coins, Upload, Download, RefreshCw } from 'lucide-react';
+import { Coins, Download, RefreshCw, Upload } from 'lucide-react';
+import React from "react";
+import { Button } from "../components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip";
 
 type Props = { manualSale: () => void, importSave: () => void, exportSave: () => void, resetGame: () => void }
 
