@@ -1,7 +1,6 @@
-import React from "react";
-import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Shop } from "../types/Shop";
+import { Shop } from "../../types/Shop";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 type ShopsListProps = {
   shops: Shop[];

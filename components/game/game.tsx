@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { Award } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip"
-import { Item } from '../types/Item'
-import { Merchant } from '../types/Merchant'
-import { Shop } from '../types/Shop'
-import { Upgrade } from '../types/Upgrade'
+import { Item } from '../../types/Item'
+import { Merchant } from '../../types/Merchant'
+import { Shop } from '../../types/Shop'
+import { Upgrade } from '../../types/Upgrade'
+import BuyCard from '../common/buyCard'
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import GameActions from './gameActions'
 import GameStats from './gameStats'
 import ItemsList from './itemsList'
@@ -323,6 +324,7 @@ export default function Game() {
           </TabsList>
           <TabsContent value="items">
             <ItemsList items={items} gold={gold} onBuyItem={buyItem} />
+            <BuyCard title="Adventuring Gear TEST" items={items} gold={gold} onBuy={buyItem} config={null}></BuyCard>
           </TabsContent>
           <TabsContent value="merchants">
             <MerchantsList merchants={merchants} gold={gold} onBuyMerchant={buyMerchant} />
