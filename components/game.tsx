@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Coins, ShoppingBag, Users, Building2, Award, TrendingUp, Sword, Shield, Beaker, Target, Shirt, Download, Upload, RefreshCw } from 'lucide-react'
+import { Coins, Users, Building2, Award, TrendingUp, Sword, Shield, Beaker, Target, Shirt, Download, Upload, RefreshCw } from 'lucide-react'
 
 type Item = {
   name: string;
@@ -68,6 +68,7 @@ export default function Game() {
   ])
   const [currentEvent, setCurrentEvent] = useState<string | null>(null)
   const [eventTimer, setEventTimer] = useState(0)
+  const [stopSave, setStopSave] = useState(true)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -82,6 +83,8 @@ export default function Game() {
   useEffect(() => {
     // Load saved data from localStorage when the component mounts
     const savedData = localStorage.getItem('dungeonMerchantSave')
+    console.log("savedData", savedData)
+    setStopSave(true)
     if (savedData) {
       const parsedData = JSON.parse(savedData)
       setGold(parsedData.gold)
@@ -95,6 +98,7 @@ export default function Game() {
       setCurrentEvent(parsedData.currentEvent)
       setEventTimer(parsedData.eventTimer)
     }
+    setStopSave(false)
   }, [])
 
   useEffect(() => {
@@ -111,7 +115,10 @@ export default function Game() {
       currentEvent,
       eventTimer
     }
-    localStorage.setItem('dungeonMerchantSave', JSON.stringify(saveData))
+    if (!stopSave) {
+      console.log("save", saveData)
+      localStorage.setItem('dungeonMerchantSave', JSON.stringify(saveData))
+    } 
   }, [gold, reputation, salesCount, prestigePoints, items, merchants, shops, upgrades, currentEvent, eventTimer])
 
   const generateSales = () => {
@@ -140,7 +147,6 @@ export default function Game() {
       setItems(prev => prev.map((item) => item ? { ...item, unlocked: true } : item))
       setMerchants(prev => prev.map((merchant) => merchant ? { ...merchant, unlocked: true } : merchant))
       setShops(prev => prev.map((shop) => shop ? { ...shop, unlocked: true } : shop))
-      console.log(items)
     }
     if (salesCount >= 500 && !upgrades[0].unlocked) {
       setUpgrades(prev => prev.map((upgrade, index) => index === 0 ? { ...upgrade, unlocked: true } : upgrade))
