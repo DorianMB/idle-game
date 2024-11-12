@@ -4,4 +4,5 @@ export type Shop = {
     boost: number;
     owned: number;
     unlocked: boolean;
+    tooltip: string;
 }

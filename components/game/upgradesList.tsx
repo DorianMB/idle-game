@@ -17,7 +17,7 @@ export default function UpgradesList({ upgrades, gold, onBuyUpgrade }: UpgradesL
       <CardContent>
         {upgrades.map((upgrade, index) => (
           <div key={index} className="mb-2">
-            <p>{upgrade.name} - Cost: {upgrade.cost} - Effect: {upgrade.effect}</p>
+            <p>{upgrade.name} - Cost: {upgrade.cost} - Effect: {upgrade.tooltip}</p>
             <Button
               onClick={() => onBuyUpgrade(index)}
               disabled={gold < upgrade.cost || !upgrade.unlocked || upgrade.purchased}

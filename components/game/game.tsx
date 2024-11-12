@@ -13,10 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import GameActions from './gameActions'
 import GameStats from './gameStats'
-import ItemsList from './itemsList'
-import MerchantsList from './merchantsList'
-import ShopsList from './shopsList'
-import UpgradesList from './upgradesList'
 
 export default function Game() {
   const [gold, setGold] = useState(100)
@@ -24,26 +20,26 @@ export default function Game() {
   const [salesCount, setSalesCount] = useState(0)
   const [prestigePoints, setPrestigePoints] = useState(0)
   const [items, setItems] = useState<Item[]>([
-    { name: "Iron Sword", cost: 10, gain: 1, owned: 0, unlocked: true },
-    { name: "Wooden Shield", cost: 15, gain: 2, owned: 0, unlocked: false },
-    { name: "Healing Potion", cost: 20, gain: 3, owned: 0, unlocked: false },
-    { name: "Oak Bow", cost: 25, gain: 4, owned: 0, unlocked: false },
-    { name: "Leather Armor", cost: 30, gain: 5, owned: 0, unlocked: false },
+    { name: "Iron Sword", cost: 10, gain: 1, owned: 0, unlocked: true, tooltip: 'Resale price : 1 gold' },
+    { name: "Wooden Shield", cost: 15, gain: 2, owned: 0, unlocked: false, tooltip: 'Resale price : 2 gold' },
+    { name: "Healing Potion", cost: 20, gain: 3, owned: 0, unlocked: false, tooltip: 'Resale price : 3 gold' },
+    { name: "Oak Bow", cost: 25, gain: 4, owned: 0, unlocked: false, tooltip: 'Resale price : 4 gold' },
+    { name: "Leather Armor", cost: 30, gain: 5, owned: 0, unlocked: false, tooltip: 'Resale price : 5 gold' },
   ])
   const [merchants, setMerchants] = useState<Merchant[]>([
-    { name: "Apprentice Merchant", cost: 50, boost: 0.1, owned: 0, unlocked: false },
-    { name: "Experienced Merchant", cost: 100, boost: 0.2, owned: 0, unlocked: false },
-    { name: "Master Merchant", cost: 200, boost: 0.3, owned: 0, unlocked: false },
+    { name: "Apprentice Merchant", cost: 50, boost: 0.1, owned: 0, unlocked: false, tooltip: 'Boost sales by 10%' },
+    { name: "Experienced Merchant", cost: 100, boost: 0.2, owned: 0, unlocked: false, tooltip: 'Boost sales by 20%' },
+    { name: "Master Merchant", cost: 200, boost: 0.3, owned: 0, unlocked: false, tooltip: 'Boost sales by 30%' },
   ])
   const [shops, setShops] = useState<Shop[]>([
-    { name: "Village Shop", cost: 100, boost: 0.05, owned: 0, unlocked: false },
-    { name: "City Shop", cost: 200, boost: 0.1, owned: 0, unlocked: false },
-    { name: "Capital Shop", cost: 500, boost: 0.2, owned: 0, unlocked: false },
+    { name: "Village Shop", cost: 100, boost: 0.05, owned: 0, unlocked: false, tooltip: 'Boost sales by 5%' },
+    { name: "City Shop", cost: 200, boost: 0.1, owned: 0, unlocked: false, tooltip: 'Boost sales by 10%' },
+    { name: "Capital Shop", cost: 500, boost: 0.2, owned: 0, unlocked: false, tooltip: 'Boost sales by 20%' },
   ])
   const [upgrades, setUpgrades] = useState<Upgrade[]>([
-    { name: "Advertising", cost: 300, effect: "Increases shop traffic by 10%", unlocked: false, purchased: false },
-    { name: "Partnerships", cost: 1000, effect: "Increases earnings by 15% for each sale", unlocked: false, purchased: false },
-    { name: "Merchant Training", cost: 1500, effect: "Increases merchant efficiency by 20%", unlocked: false, purchased: false },
+    { name: "Advertising", cost: 1, unlocked: false, purchased: false, tooltip: 'Increases shop traffic by 10%' },
+    { name: "Partnerships", cost: 5, unlocked: false, purchased: false, tooltip: 'Increases earnings by 15% for each sale' },
+    { name: "Merchant Training", cost: 10, unlocked: false, purchased: false, tooltip: 'Increases merchant efficiency by 20%' },
   ])
   const [currentEvent, setCurrentEvent] = useState<string | null>(null)
   const [eventTimer, setEventTimer] = useState(0)
@@ -177,8 +173,8 @@ export default function Game() {
 
   const buyUpgrade = (index: number) => {
     const upgrade = upgrades[index]
-    if (gold >= upgrade.cost && upgrade.unlocked && !upgrade.purchased) {
-      setGold(prev => prev - upgrade.cost)
+    if (prestigePoints >= upgrade.cost && upgrade.unlocked && !upgrade.purchased) {
+      setPrestigePoints(prev => prev - upgrade.cost)
       setUpgrades(prev => prev.map((u, idx) => idx === index ? { ...u, purchased: true } : u))
     }
   }
@@ -257,35 +253,37 @@ export default function Game() {
   }
 
   const resetGame = (prestige = false) => {
+    console.log("test", prestige)
     setGold(100)
     setReputation(0)
     setSalesCount(0)
     setCurrentEvent(null)
     setEventTimer(0)
     setItems([
-      { name: "Iron Sword", cost: 10, gain: 1, owned: 0, unlocked: true },
-      { name: "Wooden Shield", cost: 15, gain: 2, owned: 0, unlocked: false },
-      { name: "Healing Potion", cost: 20, gain: 3, owned: 0, unlocked: false },
-      { name: "Oak Bow", cost: 25, gain: 4, owned: 0, unlocked: false },
-      { name: "Leather Armor", cost: 30, gain: 5, owned: 0, unlocked: false },
+      { name: "Iron Sword", cost: 10, gain: 1, owned: 0, unlocked: true, tooltip: 'Resale price : 1 gold' },
+      { name: "Wooden Shield", cost: 15, gain: 2, owned: 0, unlocked: false, tooltip: 'Resale price : 2 gold' },
+      { name: "Healing Potion", cost: 20, gain: 3, owned: 0, unlocked: false, tooltip: 'Resale price : 3 gold' },
+      { name: "Oak Bow", cost: 25, gain: 4, owned: 0, unlocked: false, tooltip: 'Resale price : 4 gold' },
+      { name: "Leather Armor", cost: 30, gain: 5, owned: 0, unlocked: false, tooltip: 'Resale price : 5 gold' },
     ])
     setMerchants([
-      { name: "Apprentice Merchant", cost: 50, boost: 0.1, owned: 0, unlocked: false },
-      { name: "Experienced Merchant", cost: 100, boost: 0.2, owned: 0, unlocked: false },
-      { name: "Master Merchant", cost: 200, boost: 0.3, owned: 0, unlocked: false },
+      { name: "Apprentice Merchant", cost: 50, boost: 0.1, owned: 0, unlocked: false, tooltip: 'Boost sales by 10%' },
+      { name: "Experienced Merchant", cost: 100, boost: 0.2, owned: 0, unlocked: false, tooltip: 'Boost sales by 20%' },
+      { name: "Master Merchant", cost: 200, boost: 0.3, owned: 0, unlocked: false, tooltip: 'Boost sales by 30%' },
     ])
     setShops([
-      { name: "Village Shop", cost: 100, boost: 0.05, owned: 0, unlocked: false },
-      { name: "City Shop", cost: 200, boost: 0.1, owned: 0, unlocked: false },
-      { name: "Capital Shop", cost: 500, boost: 0.2, owned: 0, unlocked: false },
-    ])
-    setUpgrades([
-      { name: "Advertising", cost: 300, effect: "Increases shop traffic by 10%", unlocked: false, purchased: false },
-      { name: "Partnerships", cost: 1000, effect: "Increases earnings by 15% for each sale", unlocked: false, purchased: false },
-      { name: "Merchant Training", cost: 1500, effect: "Increases merchant efficiency by 20%", unlocked: false, purchased: false },
+      { name: "Village Shop", cost: 100, boost: 0.05, owned: 0, unlocked: false, tooltip: 'Boost sales by 5%' },
+      { name: "City Shop", cost: 200, boost: 0.1, owned: 0, unlocked: false, tooltip: 'Boost sales by 10%' },
+      { name: "Capital Shop", cost: 500, boost: 0.2, owned: 0, unlocked: false, tooltip: 'Boost sales by 20%' },
     ])
     if (!prestige) {
+      console.log("test 2", prestige)
       setPrestigePoints(0)
+      setUpgrades([
+        { name: "Advertising", cost: 1, unlocked: false, purchased: false, tooltip: 'Increases shop traffic by 10%' },
+        { name: "Partnerships", cost: 5, unlocked: false, purchased: false, tooltip: 'Increases earnings by 15% for each sale' },
+        { name: "Merchant Training", cost: 10, unlocked: false, purchased: false, tooltip: 'Increases merchant efficiency by 20%' },
+      ])
     }
   }
 
@@ -323,17 +321,16 @@ export default function Game() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="items">
-            <ItemsList items={items} gold={gold} onBuyItem={buyItem} />
-            <BuyCard title="Adventuring Gear TEST" items={items} gold={gold} onBuy={buyItem} config={null}></BuyCard>
+            <BuyCard title="Adventuring Gear" items={items} money={gold} onBuy={buyItem}></BuyCard>
           </TabsContent>
           <TabsContent value="merchants">
-            <MerchantsList merchants={merchants} gold={gold} onBuyMerchant={buyMerchant} />
+            <BuyCard title="Merchants" items={merchants} money={gold} onBuy={buyMerchant}></BuyCard>
           </TabsContent>
           <TabsContent value="shops">
-            <ShopsList shops={shops} gold={gold} onBuyShop={buyShop} />
+            <BuyCard title="Shops" items={shops} money={gold} onBuy={buyShop}></BuyCard>
           </TabsContent>
           <TabsContent value="upgrades">
-            <UpgradesList upgrades={upgrades} gold={gold} onBuyUpgrade={buyUpgrade} />
+            <BuyCard title="Guild Enhancements" items={upgrades} money={prestigePoints} onBuy={buyUpgrade}></BuyCard>
           </TabsContent>
         </Tabs>
 

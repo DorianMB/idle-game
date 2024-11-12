@@ -3,7 +3,7 @@ import { Coins, Download, RefreshCw, Upload } from 'lucide-react';
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
-type Props = { manualSale: () => void, importSave: () => void, exportSave: () => void, resetGame: () => void }
+type Props = { manualSale: () => void, importSave: () => void, exportSave: () => void, resetGame: (prestige: boolean) => void }
 
 export default function GameActions({ manualSale, importSave, exportSave, resetGame }: Props) {
   return (
@@ -41,7 +41,7 @@ export default function GameActions({ manualSale, importSave, exportSave, resetG
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button onClick={resetGame} className="w-full bg-red-600 hover:bg-red-700 text-stone-900">
+            <Button onClick={() => resetGame(false)} className="w-full bg-red-600 hover:bg-red-700 text-stone-900">
               <RefreshCw className="mr-2 h-4 w-4" /> Reset Game
             </Button>
           </TooltipTrigger>

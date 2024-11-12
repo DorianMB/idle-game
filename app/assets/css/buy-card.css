@@ -1,0 +1,12 @@
+.badge-count {
+    position: absolute;
+    width: 100%;
+    margin-left: -25%;
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #262626;
+    border: 1px #f59e0b solid;
+    font-size: 0.6rem;
+}

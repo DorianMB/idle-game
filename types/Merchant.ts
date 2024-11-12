@@ -4,4 +4,5 @@ export type Merchant = {
     boost: number;
     owned: number;
     unlocked: boolean;
+    tooltip: string;
 }
